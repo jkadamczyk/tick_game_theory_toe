@@ -1,0 +1,7 @@
+.GameContainer {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    background: #F5F5F6;
+}
