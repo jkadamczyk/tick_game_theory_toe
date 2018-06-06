@@ -4,3 +4,9 @@ export enum Size {
     H3 = 1.17,
     Normal = 1
 };
+
+export enum CellState {
+    NULL = 0,
+    X = 1,
+    O = -1
+}
