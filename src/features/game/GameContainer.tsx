@@ -1,8 +1,15 @@
 import * as React from "react";
-import "./GameContainer.css";
 import { CommonUtil } from "../../common/util/CommonUtil";
+import { connect } from 'react-redux';
+import "./GameContainer.css";
+import { setCell } from "../../actions";
+import { CellState } from "../../common/util/Enum";
 
-export class GameContainer extends React.Component<{}, {}> {
+interface Props {
+  setCell: (x, y, value) => any;
+}
+
+class GameContainer extends React.Component<Props, {}> {
   public canvas: HTMLCanvasElement;
   public canvasWrappingDiv: HTMLDivElement;
   public parentDiv: HTMLDivElement;
@@ -11,7 +18,6 @@ export class GameContainer extends React.Component<{}, {}> {
 
   public constructor(props) {
     super(props);
-    this.state = {};
   }
 
   public componentDidMount() {
@@ -46,9 +52,14 @@ export class GameContainer extends React.Component<{}, {}> {
     );
   };
 
-  private handleClick = () => {
+  private handleClick = (event: MouseEvent) => {
     // const ctx = this.canvas.getContext('2d');
-    console.log("handleCLick");
+    const boundingRect = this.canvasWrappingDiv.getBoundingClientRect();
+    const mouseX = event.clientX - boundingRect.left;
+    const mouseY = event.clientY - boundingRect.top;
+    const destX = Math.floor(mouseX / 20);
+    const destY = Math.floor(mouseY / 20);
+    this.props.setCell(destX, destY, CellState.X);
   };
 
   private drawLines() {
@@ -83,3 +94,17 @@ export class GameContainer extends React.Component<{}, {}> {
     );
   }
 }
+
+const mapStateToProps = store => ({});
+
+const mapDispatchToProps = dispatch => {
+  return {
+    setCell: (x, y, value) => dispatch(setCell(x, y, value))
+  }
+}
+
+const Game = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(GameContainer);
+export default Game;
