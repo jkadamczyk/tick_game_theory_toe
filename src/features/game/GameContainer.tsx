@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import "./GameContainer.css";
 import { setCell } from "../../actions";
 import { CellState } from "../../common/util/Enum";
+import DrawUtil from "../../common/util/DrawUtil";
+import { StoreProvider } from "../../StoreProvider";
 
 interface Props {
   setCell: (x, y, value) => any;
@@ -53,12 +55,15 @@ class GameContainer extends React.Component<Props, {}> {
   };
 
   private handleClick = (event: MouseEvent) => {
-    // const ctx = this.canvas.getContext('2d');
+    const ctx = this.canvas.getContext('2d');
     const boundingRect = this.canvasWrappingDiv.getBoundingClientRect();
     const mouseX = event.clientX - boundingRect.left;
     const mouseY = event.clientY - boundingRect.top;
     const destX = Math.floor(mouseX / 20);
     const destY = Math.floor(mouseY / 20);
+    if (StoreProvider.getState().gameState[destX][destY] === 0) {
+      DrawUtil.drawX(ctx, destX * 20, destY * 20);
+    }
     this.props.setCell(destX, destY, CellState.X);
   };
 
