@@ -26,13 +26,13 @@ export const gameStateReducer = (state = initialGameReducerState, action) => {
 export const boardPositionReducer = (state = {x: 0, y: 0}, action) => {
   switch (action.type) {
     case ActionTypes.MOVE_BOARD_UP:
-      return state;
+      return {...state, y: state.y - 1};
     case ActionTypes.MOVE_BOARD_RIGHT:
-      return state;
+      return {...state, x: state.x + 1};
     case ActionTypes.MOVE_BOARD_DOWN:
-      return state;
+      return {...state, y: state.y + 1};
     case ActionTypes.MOVE_BOARD_LEFT:
-      return state;
+      return {...state, x: state.x - 1};
     case ActionTypes.SET_BOARD_POSITION:
       return state;
     default:
