@@ -32,8 +32,10 @@ class GameContainer extends React.Component<Props, {}> {
   }
 
   public componentDidUpdate() {
+    const ctx = this.canvas.getContext('2d');
     DrawUtil.clearCanvas(this.canvas);
     this.drawCanvas();
+    DrawUtil.drawAllXOs(ctx);
   }
 
   public componentWillUnmount() {
@@ -71,15 +73,20 @@ class GameContainer extends React.Component<Props, {}> {
 
   private handleArrowKeys = (event: KeyboardEvent) => {
     const { boardUp, boardDown, boardLeft, boardRight } = this.props;
+    const position = StoreProvider.getState().boardPosition;
     switch (event.key) {
       case "ArrowUp":
-        boardUp();
+        if (position.y > 0) {
+          boardUp();
+        }
         break;
       case "ArrowDown":
         boardDown();
         break;
       case "ArrowLeft":
-        boardLeft();
+        if (position.x > 0) {
+          boardLeft();
+        }
         break;
       case "ArrowRight":
         boardRight();

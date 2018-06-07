@@ -1,5 +1,6 @@
 import { StoreProvider } from "../../StoreProvider";
 import { CommonUtil } from "./CommonUtil";
+import { CellState } from "./Enum";
 
 class DrawUtil {
   public static drawX(ctx: CanvasRenderingContext2D, x: number, y: number) {
@@ -38,7 +39,7 @@ class DrawUtil {
       this.drawLine(ctx, width, 0, width, canvas.height);
       width -= 20;
     }
-    if (StoreProvider.getState().boardPosition.y === 0) {
+    if (StoreProvider.getState().boardPosition.x === 0) {
       this.drawLine(ctx, width, 0, width, canvas.height);
     }
   }
@@ -61,7 +62,11 @@ class DrawUtil {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
   }
 
-  public static updateCanvasDimensions(canvas: HTMLCanvasElement, parentDiv: HTMLDivElement, canvasWrappingDiv: HTMLDivElement) {
+  public static updateCanvasDimensions(
+    canvas: HTMLCanvasElement,
+    parentDiv: HTMLDivElement,
+    canvasWrappingDiv: HTMLDivElement
+  ) {
     const width = parentDiv.clientWidth;
     const height = parentDiv.clientHeight;
     const canvasWidth = CommonUtil.calculateCanvasDimension(width);
@@ -70,6 +75,19 @@ class DrawUtil {
     canvas.height = canvasHeight;
     canvasWrappingDiv.style.width = canvasWidth + "px";
     canvasWrappingDiv.style.height = canvasHeight + "px";
+  }
+
+  public static drawAllXOs(ctx: CanvasRenderingContext2D) {
+    const position = StoreProvider.getState().boardPosition;
+    StoreProvider.getState().gameState.forEach((array, x) => {
+      array.forEach((cellState, y) => {
+        if (cellState === CellState.X) {
+          DrawUtil.drawX(ctx, (x - position.x) * 20, (y - position.y) * 20);
+        } else if (cellState === CellState.O) {
+          DrawUtil.drawO(ctx, (x - position.x) * 20, (y - position.y) * 20);
+        }
+      });
+    });
   }
 }
 
