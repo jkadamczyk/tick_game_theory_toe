@@ -32,7 +32,7 @@ class GameContainer extends React.Component<Props, {}> {
   }
 
   public componentDidUpdate() {
-    const ctx = this.canvas.getContext('2d');
+    const ctx = this.canvas.getContext("2d");
     DrawUtil.clearCanvas(this.canvas);
     this.drawCanvas();
     DrawUtil.drawAllXOs(ctx);
@@ -45,7 +45,11 @@ class GameContainer extends React.Component<Props, {}> {
   }
 
   private drawCanvas = () => {
-    DrawUtil.updateCanvasDimensions(this.canvas, this.parentDiv, this.canvasWrappingDiv);
+    DrawUtil.updateCanvasDimensions(
+      this.canvas,
+      this.parentDiv,
+      this.canvasWrappingDiv
+    );
     DrawUtil.drawBoardCells(this.canvas);
   };
 
@@ -59,9 +63,53 @@ class GameContainer extends React.Component<Props, {}> {
     if (StoreProvider.getState().gameState[destX][destY] === 0) {
       DrawUtil.drawX(ctx, destX * 20, destY * 20);
       this.props.setCell(destX, destY, CellState.X);
+      this.checkWin(destX, destY, CellState.X);
       this.opponentMove();
     }
   };
+
+  private checkWin(destX: number, destY: number, sign: CellState): boolean {
+    console.log('checking win status');
+    const neighborhood = [
+      [-1,-1],
+      [0,-1], 
+      [1,-1], 
+      [1, 0],
+      [1, 1],
+      [0, 1],
+      [-1, 1],
+      [-1, 0]
+    ];
+    const board = StoreProvider.getState().gameState;
+    for (const el of neighborhood) {
+      if (board[destX + el[0]][destY + el[1]] === sign) {
+        let score = 1;
+        let counter = 1;
+        while (board[destX + (counter * el[0])][destY + (counter * el[1])] === sign) {
+          score += 1;
+          counter +=1
+          if (score > 5) {
+            break;
+          }
+        }
+        counter = -1;
+        while (board[destX + (counter * el[0])][destY + (counter * el[1])] === sign) {
+          score +=1;
+          counter -= 1;
+          if (score > 5) {
+            break;
+          }
+        }
+        if (score === 5) {
+          console.log('won');
+          return true;
+        } else {
+          break;
+        }
+      }
+    }
+    return false;
+  }
 
   private opponentMove() {
     const ctx = this.canvas.getContext("2d");
@@ -81,7 +129,9 @@ class GameContainer extends React.Component<Props, {}> {
         }
         break;
       case "ArrowDown":
-        boardDown();
+        if (position.y + this.canvas.height / 20 < 100) {
+          boardDown();
+        }
         break;
       case "ArrowLeft":
         if (position.x > 0) {
@@ -89,7 +139,9 @@ class GameContainer extends React.Component<Props, {}> {
         }
         break;
       case "ArrowRight":
-        boardRight();
+        if (position.x + this.canvas.width / 20 < 100) {
+          boardRight();
+        }
         break;
       default:
         console.log("unrecognized key event");
@@ -98,7 +150,7 @@ class GameContainer extends React.Component<Props, {}> {
   };
 
   public render() {
-    console.log('render');
+    console.log("render");
     return (
       <div ref={ref => (this.parentDiv = ref)} className="GameContainer">
         <div ref={ref => (this.canvasWrappingDiv = ref)}>

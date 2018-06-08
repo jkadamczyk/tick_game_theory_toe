@@ -25,7 +25,11 @@ class DrawUtil {
   public static drawBoardCells(canvas: HTMLCanvasElement) {
     const ctx = canvas.getContext("2d");
     // Drawing vertical lines
-    let height = canvas.height - 20;
+    let height = canvas.height;
+    if (StoreProvider.getState().boardPosition.y + canvas.height / 20 === 100) {
+      this.drawLine(ctx, 0, height, canvas.width, height);
+    }
+    height -= 20;
     while (height > 0) {
       this.drawLine(ctx, 0, height, canvas.width, height);
       height -= 20;
@@ -34,7 +38,11 @@ class DrawUtil {
       this.drawLine(ctx, 0, height, canvas.width, height);
     }
     // drawing horizontal lines
-    let width = canvas.width - 20;
+    let width = canvas.width;
+    if (StoreProvider.getState().boardPosition.x + canvas.width / 20 === 100) {
+      this.drawLine(ctx, width, 0, width, canvas.height);
+    }
+    width -= 20;
     while (width > 0) {
       this.drawLine(ctx, width, 0, width, canvas.height);
       width -= 20;
