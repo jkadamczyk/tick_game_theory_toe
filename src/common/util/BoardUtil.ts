@@ -13,16 +13,23 @@ export class BoardUtil {
   public static getNeighbors(element: Point): Point[] {
     const neighbors: Point[] = [];
     const neighborhood = [
-      [-1,-1],
-      [0,-1], 
-      [1,-1], 
+      [-1, -1],
+      [0, -1],
+      [1, -1],
       [1, 0],
       [1, 1],
       [0, 1],
       [-1, 1],
       [-1, 0]
     ];
-    neighborhood.forEach(neighbor => neighbors.push({x: element.x + neighbor[0], y: element.y + neighbor[1]}));
+    neighborhood.forEach(neighbor => {
+      if (element.x + neighbor[0] >= 0 && element.y + neighbor[1] >= 0) {
+        neighbors.push({
+          x: element.x + neighbor[0],
+          y: element.y + neighbor[1]
+        });
+      }
+    });
     return neighbors;
   }
 }

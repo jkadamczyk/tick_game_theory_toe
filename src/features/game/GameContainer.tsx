@@ -73,7 +73,7 @@ class GameContainer extends React.Component<Props, {}> {
   private opponentMove() {
     const ctx = this.canvas.getContext("2d");
     const possibleMoves: Point[] = GameUtil.getAvailableMoves(StoreProvider.getState().gameState);
-    const randomIndex = Math.floor(Math.random() * possibleMoves.length);
+    const randomIndex = Math.floor(Math.random() * (possibleMoves.length - 1));
     console.log(possibleMoves);
     DrawUtil.drawO(ctx, possibleMoves[randomIndex].x * 20, possibleMoves[randomIndex].y * 20);
     this.props.setCell(possibleMoves[randomIndex].x, possibleMoves[randomIndex].y, CellValue.O);
