@@ -12,13 +12,17 @@ class GameUtil {
     lastMove: Point,
     sign: CellValue
   ): number {
-    const coefficient = sign === CellValue.X ? -1 : 1
+    const coefficient = sign === CellValue.X ? -1 : 1;
     const opponentSign = sign === CellValue.X ? CellValue.O : CellValue.X;
 
     board[lastMove.x][lastMove.y] = sign;
 
     const inLinePlayer = this.checkHowMuchInLine(board, lastMove, sign);
-    const inLineOpponent = this.checkHowMuchInLine(board, lastMove, opponentSign);
+    const inLineOpponent = this.checkHowMuchInLine(
+      board,
+      lastMove,
+      opponentSign
+    );
 
     board[lastMove.x][lastMove.y] = CellValue.NULL;
 
@@ -34,6 +38,10 @@ class GameUtil {
       return coefficient * 600;
     } else if (inLineOpponent === 3) {
       return coefficient * 1000;
+    } else if (inLinePlayer === 2) {
+      return coefficient * 60;
+    } else if (inLineOpponent === 2) {
+      return coefficient * 100;
     }
 
     return 0;
@@ -45,7 +53,7 @@ class GameUtil {
     for (let x = sizeLimit.minHorizontal; x <= sizeLimit.maxHorizontal; x++) {
       for (let y = sizeLimit.minVertical; y <= sizeLimit.maxVertical; y++) {
         if (board[x][y] === CellValue.NULL) {
-          markedAvailable.push({x,y});
+          markedAvailable.push({ x, y });
         }
       }
     }

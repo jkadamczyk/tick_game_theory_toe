@@ -77,7 +77,6 @@ class GameContainer extends React.Component<Props, {}> {
     const possibleMoves: Point[] = GameUtil.getAvailableMoves(board);
     const toChose = possibleMoves.map(move => GameUtil.getBoardValue(board, move, CellValue.O));
     const maxIndex = toChose.indexOf(max(toChose));
-    // console.log(GameUtil.getBoardValue(board, possibleMoves[randomIndex], CellValue.O));
     DrawUtil.drawO(ctx, possibleMoves[maxIndex].x * 20, possibleMoves[maxIndex].y * 20);
     this.props.setCell(possibleMoves[maxIndex].x, possibleMoves[maxIndex].y, CellValue.O);
   }
