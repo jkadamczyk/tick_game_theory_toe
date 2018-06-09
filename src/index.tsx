@@ -10,9 +10,6 @@ import configureStore from "./configureStore";
 StoreProvider.initStore(configureStore);
 const store = StoreProvider.getStore();
 
-console.log(StoreProvider.getStore());
-console.log(StoreProvider.getState());
-
 ReactDOM.render(
   <Provider store={store}>
     <App />

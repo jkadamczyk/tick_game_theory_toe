@@ -1,7 +1,7 @@
 import * as React from 'react';
 import "./NavBar.css";
-import { Text } from '../../common/components/Text/Text';
-import { Size } from '../../common/util/Enum';
+import { Text } from '../../components/Text/Text';
+import { Size } from '../../util/Enum';
 
 export const NavBar = () => (
     <div className="NavBar">

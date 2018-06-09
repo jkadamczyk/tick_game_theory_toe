@@ -1,4 +1,4 @@
-import { StoreProvider } from "../../StoreProvider";
+import { StoreProvider } from "../StoreProvider";
 import CanvasUtil from "./CanvasUtil";
 import { CellValue } from "./Enum";
 

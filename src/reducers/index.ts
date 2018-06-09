@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
 import ActionTypes from "../actions/ActionTypes";
-import { BoardUtil } from "../common/util/BoardUtil";
+import { BoardUtil } from "../util/BoardUtil";
 
 const initialGameReducerState = BoardUtil.initializeEmptyGameArray();
 
