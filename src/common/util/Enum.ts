@@ -5,7 +5,7 @@ export enum Size {
     Normal = 1
 };
 
-export enum CellState {
+export enum CellValue {
     NULL = 0,
     X = 1,
     O = -1

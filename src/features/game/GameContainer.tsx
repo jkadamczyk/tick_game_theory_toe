@@ -2,9 +2,11 @@ import * as React from "react";
 import { connect } from "react-redux";
 import ActionCreators from "../../actions";
 import DrawUtil from "../../common/util/DrawUtil";
-import { CellState } from "../../common/util/Enum";
+import { CellValue } from "../../common/util/Enum";
 import { StoreProvider } from "../../StoreProvider";
 import "./GameContainer.css";
+import GameUtil from "../../common/util/GameUtil";
+import Point from "../../common/util/Point";
 
 interface Props {
   setCell: (x, y, value) => any;
@@ -62,61 +64,19 @@ class GameContainer extends React.Component<Props, {}> {
     const destY = Math.floor(mouseY / 20);
     if (StoreProvider.getState().gameState[destX][destY] === 0) {
       DrawUtil.drawX(ctx, destX * 20, destY * 20);
-      this.props.setCell(destX, destY, CellState.X);
-      this.checkWin(destX, destY, CellState.X);
+      this.props.setCell(destX, destY, CellValue.X);
+      GameUtil.checkGameWin(StoreProvider.getState().gameState ,destX, destY, CellValue.X);
       this.opponentMove();
     }
   };
 
-  private checkWin(destX: number, destY: number, sign: CellState): boolean {
-    console.log('checking win status');
-    const neighborhood = [
-      [-1,-1],
-      [0,-1], 
-      [1,-1], 
-      [1, 0],
-      [1, 1],
-      [0, 1],
-      [-1, 1],
-      [-1, 0]
-    ];
-    const board = StoreProvider.getState().gameState;
-    for (const el of neighborhood) {
-      if (board[destX + el[0]][destY + el[1]] === sign) {
-        let score = 1;
-        let counter = 1;
-        while (board[destX + (counter * el[0])][destY + (counter * el[1])] === sign) {
-          score += 1;
-          counter +=1
-          if (score > 5) {
-            break;
-          }
-        }
-        counter = -1;
-        while (board[destX + (counter * el[0])][destY + (counter * el[1])] === sign) {
-          score +=1;
-          counter -= 1;
-          if (score > 5) {
-            break;
-          }
-        }
-        if (score === 5) {
-          console.log('won');
-          return true;
-        } else {
-          break;
-        }
-      }
-    }
-    return false;
-  }
-
   private opponentMove() {
     const ctx = this.canvas.getContext("2d");
-    const destX = Math.floor(Math.random() * 20);
-    const destY = Math.floor(Math.random() * 20);
-    DrawUtil.drawO(ctx, destX * 20, destY * 20);
-    this.props.setCell(destX, destY, CellState.O);
+    const possibleMoves: Point[] = GameUtil.getAvailableMoves(StoreProvider.getState().gameState);
+    const randomIndex = Math.floor(Math.random() * possibleMoves.length);
+    console.log(possibleMoves);
+    DrawUtil.drawO(ctx, possibleMoves[randomIndex].x * 20, possibleMoves[randomIndex].y * 20);
+    this.props.setCell(possibleMoves[randomIndex].x, possibleMoves[randomIndex].y, CellValue.O);
   }
 
   private handleArrowKeys = (event: KeyboardEvent) => {

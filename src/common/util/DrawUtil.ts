@@ -1,6 +1,6 @@
 import { StoreProvider } from "../../StoreProvider";
-import { CommonUtil } from "./CommonUtil";
-import { CellState } from "./Enum";
+import CanvasUtil from "./CanvasUtil";
+import { CellValue } from "./Enum";
 
 class DrawUtil {
   public static drawX(ctx: CanvasRenderingContext2D, x: number, y: number) {
@@ -77,8 +77,8 @@ class DrawUtil {
   ) {
     const width = parentDiv.clientWidth;
     const height = parentDiv.clientHeight;
-    const canvasWidth = CommonUtil.calculateCanvasDimension(width);
-    const canvasHeight = CommonUtil.calculateCanvasDimension(height);
+    const canvasWidth = CanvasUtil.calculateCanvasDimension(width);
+    const canvasHeight = CanvasUtil.calculateCanvasDimension(height);
     canvas.width = canvasWidth;
     canvas.height = canvasHeight;
     canvasWrappingDiv.style.width = canvasWidth + "px";
@@ -89,9 +89,9 @@ class DrawUtil {
     const position = StoreProvider.getState().boardPosition;
     StoreProvider.getState().gameState.forEach((array, x) => {
       array.forEach((cellState, y) => {
-        if (cellState === CellState.X) {
+        if (cellState === CellValue.X) {
           DrawUtil.drawX(ctx, (x - position.x) * 20, (y - position.y) * 20);
-        } else if (cellState === CellState.O) {
+        } else if (cellState === CellValue.O) {
           DrawUtil.drawO(ctx, (x - position.x) * 20, (y - position.y) * 20);
         }
       });
