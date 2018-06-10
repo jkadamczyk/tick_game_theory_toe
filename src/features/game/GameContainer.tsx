@@ -7,7 +7,7 @@ import DrawUtil from "../../util/DrawUtil";
 import { CellValue } from "../../util/Enum";
 import GameUtil from "../../util/GameUtil";
 import "./GameContainer.css";
-import { max } from "lodash-es";
+import { BOARD_SIZE } from "../../util/Settings";
 
 interface Props {
   setCell: (x, y, value) => any;
@@ -61,24 +61,21 @@ class GameContainer extends React.Component<Props, {}> {
     const boundingRect = this.canvasWrappingDiv.getBoundingClientRect();
     const mouseX = event.clientX - boundingRect.left;
     const mouseY = event.clientY - boundingRect.top;
-    const destX = Math.floor(mouseX / 20);
-    const destY = Math.floor(mouseY / 20);
-    if (StoreProvider.getState().gameState[destX][destY] === 0) {
-      DrawUtil.drawX(ctx, destX * 20, destY * 20);
-      this.props.setCell(destX, destY, CellValue.X);
-      GameUtil.checkGameWin(StoreProvider.getState().gameState, {x: destX, y: destY}, CellValue.X);
-      this.opponentMove();
+    const move: Point = {x: Math.floor(mouseX / 20), y: Math.floor(mouseY / 20)}
+    if (StoreProvider.getState().gameState[move.x][move.y] === 0) {
+      DrawUtil.drawX(ctx, move.x * 20, move.y * 20);
+      this.props.setCell(move.x, move.y, CellValue.X);
+      GameUtil.checkGameWin(StoreProvider.getState().gameState, {x: move.x, y: move.y}, CellValue.X);
+      this.opponentMove(move);
     }
   };
 
-  private opponentMove() {
+  private opponentMove(lastMove: Point) {
     const ctx = this.canvas.getContext("2d");
     const board = StoreProvider.getState().gameState;
-    const possibleMoves: Point[] = GameUtil.getAvailableMoves(board);
-    const toChose = possibleMoves.map(move => GameUtil.getBoardValue(board, move, CellValue.O));
-    const maxIndex = toChose.indexOf(max(toChose));
-    DrawUtil.drawO(ctx, possibleMoves[maxIndex].x * 20, possibleMoves[maxIndex].y * 20);
-    this.props.setCell(possibleMoves[maxIndex].x, possibleMoves[maxIndex].y, CellValue.O);
+    const nextMove = GameUtil.getBestNextMove(board, 3, CellValue.O);
+    DrawUtil.drawO(ctx, nextMove.x * 20, nextMove.y * 20);
+    this.props.setCell(nextMove.x, nextMove.y, CellValue.O);
   }
 
   private handleArrowKeys = (event: KeyboardEvent) => {
@@ -91,7 +88,7 @@ class GameContainer extends React.Component<Props, {}> {
         }
         break;
       case "ArrowDown":
-        if (position.y + this.canvas.height / 20 < 100) {
+        if (position.y + this.canvas.height / 20 < BOARD_SIZE) {
           boardDown();
         }
         break;
@@ -101,7 +98,7 @@ class GameContainer extends React.Component<Props, {}> {
         }
         break;
       case "ArrowRight":
-        if (position.x + this.canvas.width / 20 < 100) {
+        if (position.x + this.canvas.width / 20 < BOARD_SIZE) {
           boardRight();
         }
         break;

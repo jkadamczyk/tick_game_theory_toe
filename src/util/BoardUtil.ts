@@ -1,12 +1,13 @@
 import { CellValue } from "./Enum";
 import Point from "../interfaces/Point";
 import { BoardRealisticSize } from "../interfaces/BoardRealisticSize";
+import { BOARD_SIZE } from "./Settings";
 
 export class BoardUtil {
   public static initializeEmptyGameArray(): CellValue[][] {
-    const resultArray = new Array(100);
-    for (let i = 0; i < 100; i++) {
-      resultArray[i] = new Array(100).fill(CellValue.NULL);
+    const resultArray = new Array(BOARD_SIZE);
+    for (let i = 0; i < BOARD_SIZE; i++) {
+      resultArray[i] = new Array(BOARD_SIZE).fill(CellValue.NULL);
     }
     return resultArray;
   }
@@ -62,9 +63,9 @@ export class BoardUtil {
     }
     return { 
       minVertical: minVertical - overhead < 0 ? 0 : minVertical - overhead, 
-      maxVertical: maxVertical + overhead > 100 ? 100 : maxVertical + overhead,
+      maxVertical: maxVertical + overhead > BOARD_SIZE ? BOARD_SIZE : maxVertical + overhead,
       minHorizontal: minHorizontal - overhead < 0 ? 0 : minHorizontal - overhead,
-      maxHorizontal: maxHorizontal + overhead > 100 ? 100 : maxHorizontal + overhead 
+      maxHorizontal: maxHorizontal + overhead > BOARD_SIZE ? BOARD_SIZE : maxHorizontal + overhead 
     };
   }
 }

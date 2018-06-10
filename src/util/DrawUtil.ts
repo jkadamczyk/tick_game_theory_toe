@@ -1,6 +1,7 @@
 import { StoreProvider } from "../StoreProvider";
 import CanvasUtil from "./CanvasUtil";
 import { CellValue } from "./Enum";
+import { BOARD_SIZE } from "./Settings";
 
 class DrawUtil {
   public static drawX(ctx: CanvasRenderingContext2D, x: number, y: number) {
@@ -26,7 +27,7 @@ class DrawUtil {
     const ctx = canvas.getContext("2d");
     // Drawing vertical lines
     let height = canvas.height;
-    if (StoreProvider.getState().boardPosition.y + canvas.height / 20 === 100) {
+    if (StoreProvider.getState().boardPosition.y + canvas.height / 20 === BOARD_SIZE) {
       this.drawLine(ctx, 0, height, canvas.width, height);
     }
     height -= 20;
@@ -39,7 +40,7 @@ class DrawUtil {
     }
     // drawing horizontal lines
     let width = canvas.width;
-    if (StoreProvider.getState().boardPosition.x + canvas.width / 20 === 100) {
+    if (StoreProvider.getState().boardPosition.x + canvas.width / 20 === BOARD_SIZE) {
       this.drawLine(ctx, width, 0, width, canvas.height);
     }
     width -= 20;

@@ -1,10 +1,58 @@
 import Point from "../interfaces/Point";
 import { BoardUtil } from "./BoardUtil";
 import { CellValue } from "./Enum";
+import { sortBy, find } from "lodash-es";
+import { BOARD_SIZE } from "./Settings";
 
 class GameUtil {
-  public static minMax(board: CellValue[][], lastMove: Point) {
-    console.log("minmax");
+  public static getBestNextMove(
+    board: CellValue[][],
+    movesForward: number,
+    sign: CellValue
+  ): Point {
+    const availableMoves: Point[] = this.getAvailableMoves(board);
+    let movesWithWeights = availableMoves.map(move => ({
+      move,
+      weight: this.minMax(board, move, movesForward - 1, sign)
+    }));
+
+    movesWithWeights = sortBy(movesWithWeights, "weight");
+    return movesWithWeights[movesWithWeights.length - 1].move;
+  }
+
+  public static minMax(
+    board: CellValue[][],
+    lastMove: Point,
+    movesForward,
+    sign
+  ): number {
+    if (movesForward > 0) {
+      const value = this.getBoardValue(board, lastMove, sign);
+      if (value !== 0) {
+        return value * movesForward;
+      }
+
+      board[lastMove.x][lastMove.y] = sign;
+
+      const availableMoves: Point[] = this.getAvailableMoves(board);
+      const signForNextStep = sign === CellValue.X ? CellValue.O : CellValue.X;
+      let movesWithWeights = availableMoves.map(move => ({
+        move,
+        weight: this.minMax(board, move, movesForward - 1, signForNextStep)
+      }));
+
+      board[lastMove.x][lastMove.y] = CellValue.NULL;
+
+      movesWithWeights = sortBy(movesWithWeights, "weight");
+
+      if (sign === CellValue.O) {
+        return movesWithWeights[movesWithWeights.length - 1].weight;
+      } else {
+        return movesWithWeights[0].weight;
+      }
+    } else {
+      return this.getBoardValue(board, lastMove, sign);
+    }
   }
 
   public static getBoardValue(
@@ -24,24 +72,21 @@ class GameUtil {
       opponentSign
     );
 
+
     board[lastMove.x][lastMove.y] = CellValue.NULL;
 
     if (inLinePlayer === 5) {
-      return coefficient * 60000;
+      return coefficient * 70000;
     } else if (inLineOpponent === 5) {
       return coefficient * 100000;
     } else if (inLinePlayer === 4) {
-      return coefficient * 6000;
+      return coefficient * 7000;
     } else if (inLineOpponent === 4) {
       return coefficient * 10000;
     } else if (inLinePlayer === 3) {
-      return coefficient * 600;
+      return coefficient * 700;
     } else if (inLineOpponent === 3) {
       return coefficient * 1000;
-    } else if (inLinePlayer === 2) {
-      return coefficient * 60;
-    } else if (inLineOpponent === 2) {
-      return coefficient * 100;
     }
 
     return 0;
@@ -49,11 +94,18 @@ class GameUtil {
 
   public static getAvailableMoves(board: CellValue[][]): Point[] {
     const markedAvailable: Point[] = [];
-    const sizeLimit = BoardUtil.getLimitedBoardSize(board);
-    for (let x = sizeLimit.minHorizontal; x <= sizeLimit.maxHorizontal; x++) {
-      for (let y = sizeLimit.minVertical; y <= sizeLimit.maxVertical; y++) {
-        if (board[x][y] === CellValue.NULL) {
-          markedAvailable.push({ x, y });
+    for (let x = 0; x < BOARD_SIZE; x++) {
+      for (let y = 0; y < BOARD_SIZE; y++) {
+        if (board[x][y] !== CellValue.NULL) {
+          const neighbors: Point[] = BoardUtil.getNeighbors({ x, y });
+          neighbors.forEach((point: Point) => {
+            if (
+              find(markedAvailable, { x: point.x, y: point.y }) === undefined &&
+              board[point.x][point.y] === CellValue.NULL
+            ) {
+              markedAvailable.push(point);
+            }
+          });
         }
       }
     }
