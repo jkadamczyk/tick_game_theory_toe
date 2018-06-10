@@ -76,6 +76,7 @@ class GameContainer extends React.Component<Props, {}> {
     const nextMove = GameUtil.getBestNextMove(board, 3, CellValue.O);
     DrawUtil.drawO(ctx, nextMove.x * 20, nextMove.y * 20);
     this.props.setCell(nextMove.x, nextMove.y, CellValue.O);
+    GameUtil.checkGameWin(StoreProvider.getState().gameState, {x: nextMove.x, y: nextMove.y}, CellValue.O);
   }
 
   private handleArrowKeys = (event: KeyboardEvent) => {
